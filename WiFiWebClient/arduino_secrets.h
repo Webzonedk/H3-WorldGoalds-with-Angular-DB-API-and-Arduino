@@ -1,4 +1,4 @@
-//This file should be excluded from Github
+//This file should be excluded from Githubber
 #define SECRET_SSID "BavnelyIOT"
 #define SECRET_PASS "Michelle@1903!"
 
