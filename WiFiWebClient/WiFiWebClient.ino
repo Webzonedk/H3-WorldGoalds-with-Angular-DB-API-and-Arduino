@@ -38,7 +38,8 @@ int status = WL_IDLE_STATUS;
 // if you don't want to use DNS (and reduce your sketch size)
 // use the numeric IP instead of the name for the server:
 // IPAddress server(74,125,232,128);  // numeric IP for Google (no DNS)
-char server[] = "www.google.com"; // name address for Google (using DNS)
+IPAddress server(192,168,1,128);  // numeric IP for Google (no DNS)
+//char server[] = "www.google.com"; // name address for Google (using DNS)
 
 // Initialize the Ethernet client library
 // with the IP address and port of the server
@@ -84,14 +85,17 @@ void setup()
 
   Serial.println("\nStarting connection to server...");
   // if you get a connection, report back via serial:
-  if (client.connect(server, 80))
+  if (client.connect(server, 7139))
   {
     Serial.println("connected to server");
     //------------------------------------------------------------
     // Make a HTTP request:
     //------------------------------------------------------------
-    client.println("GET /search?q=arduino HTTP/1.1");
-    client.println("Host: www.google.com");
+    client.println("POST /api/sensor/SendData");
+    client.print("{\"Humidity\": 28.35,\"Temperature\": 23.50}");
+    // client.print("{"Humidity": 28.35,"Temperature": 23.50}");
+    // client.print("{"Humidity": 28.35,"Temperature": 23.50}");
+    // client.print("{"Humidity": 28.35,"Temperature": 23.50}");
     client.println("Connection: close");
     client.println();
   }
@@ -99,25 +103,25 @@ void setup()
 
 void loop()
 {
-  // if there are incoming bytes available
-  // from the server, read them and print them:
-  while (client.available())
-  {
-    char c = client.read();
-    Serial.write(c);
-  }
+  // // if there are incoming bytes available
+  // // from the server, read them and print them:
+  // while (client.available())
+  // {
+  //   char c = client.read();
+  //   Serial.write(c);
+  // }
 
-  // if the server's disconnected, stop the client:
-  if (!client.connected())
-  {
-    Serial.println();
-    Serial.println("disconnecting from server.");
-    client.stop();
+  // // if the server's disconnected, stop the client:
+  // if (!client.connected())
+  // {
+  //   Serial.println();
+  //   Serial.println("disconnecting from server.");
+  //   client.stop();
 
-    // do nothing forevermore:
-    while (true)
-      ;
-  }
+  //   // do nothing forevermore:
+  //   while (true)
+  //     ;
+  // }
 
   readTempAndHum();
 }
@@ -146,7 +150,7 @@ void readTempAndHum()
   temp = dht.readTemperature();
 
   Serial.print("Humidity: ");
-  Serial.print(hum);
+  Serial.print(hum, temp);
   Serial.print(" %, Temp: ");
   Serial.print(temp);
   Serial.println(" Celsius");
