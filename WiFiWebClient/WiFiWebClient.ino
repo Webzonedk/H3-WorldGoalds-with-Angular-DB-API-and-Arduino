@@ -19,13 +19,18 @@ DHT dht(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
 float hum;  // Stores humidity value
 float temp; // Stores temperature value
 
+// All three numbers needs to be the same or the code will break
+int spreadSize = 10;
+float hums[10];
+float temps[10];
+
 ///////please enter your sensitive data in the Secret tab/arduino_secrets.h
 /////// WiFi Settings ///////
 char ssid[] = SECRET_SSID;
 char pass[] = SECRET_PASS;
 
-char serverAddress[] = "192.168.2.0"; // server address
-int port = 7139;
+char serverAddress[] = "192.168.2.24"; // server address for the API
+int port = 8001;                       // Port number for the API
 
 WiFiClient wifi;
 HttpClient client = HttpClient(wifi, serverAddress, port);
@@ -57,12 +62,12 @@ void setup()
 void loop()
 {
   readTempAndHum();
-  String path = "/api/sensor/sendData";
+  String path = "/api/sensor/post";
   Serial.println("making POST request");
-  String contentType = "application/x-www-form-urlencoded";
+  String contentType = "application/json";
 
-  // String postData = "humidity=15.25&temperature=25.50";
-  String postData = "humidity=" + String(hum, 3) + "&temperature=" + String(temp, 3);
+  String postData = "{\"humidity\":" + String(hum, 2) + ",\"temperature\":" + String(temp, 2) +"}";
+  //String postData1 = "humidity=" + String(hum, 2) + "&temperature=" + String(temp, 2);
 
   Serial.print("postData: = "); // DEBUG
   Serial.println(postData);     // DEBUG
@@ -78,18 +83,36 @@ void loop()
   Serial.print("Response: ");
   Serial.println(response);
 
-  Serial.println("Wait five seconds");
-  delay(5000);
+  Serial.println("Wait a sec");
+  delay(1000);
 }
 
 void readTempAndHum()
 {
-  hum = dht.readHumidity();
-  temp = dht.readTemperature();
+  for (int i = 0; i < spreadSize; i++)
+  {
+    hum = dht.readHumidity();
+    temp = dht.readTemperature();
+    Serial.print("Humidity: ");
+    Serial.print(hum);
+    Serial.print(" %, Temp: ");
+    Serial.print(temp);
+    Serial.println(" Celsius");
+    hums[i] = hum;
+    temps[i] = temp;
+    delay(500); // Delay 1 sec.
+  }
+  float humsCount = 0;
+  float tempsCount = 0;
+  for (int i = 0; i < spreadSize; i++)
+  {
+    humsCount += hums[i];
+    tempsCount += temps[i];
+  }
+  hum = humsCount / spreadSize;
+  temp = tempsCount / spreadSize;
   Serial.print("Humidity: ");
   Serial.print(hum);
   Serial.print(" %, Temp: ");
-  Serial.print(temp);
-  Serial.println(" Celsius");
-  // delay(1000); // Delay 1 sec.
+  Serial.println(temp);
 }
