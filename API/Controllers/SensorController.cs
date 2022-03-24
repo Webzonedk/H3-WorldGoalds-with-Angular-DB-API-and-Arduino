@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using System.Diagnostics;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace API.Controllers
@@ -27,13 +28,29 @@ namespace API.Controllers
         //}
 
         // POST api/<sensorController>
-        [Route("SendData")]
+        [Route("sendData")]
         [HttpPost]
         public void Post([FromBody] SensorData value)
         {
-            if (value != null)
+            try
             {
-                dataList.Add(value);
+                if (value != null)
+                {
+                    Debug.WriteLine(value.ToString());
+                    dataList.Add(value);
+                    for (int i = 0; i < dataList.Count; i++)
+                    {
+                        Debug.WriteLine(dataList[i].Humidity);
+                        Debug.WriteLine(dataList[i].Temperature);
+
+                    }
+                }
+
+            }
+            catch (Exception)
+            {
+
+
             }
         }
 
