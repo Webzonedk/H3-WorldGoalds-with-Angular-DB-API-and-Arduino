@@ -4,5 +4,6 @@
     {
         public double Humidity { get; set; }
         public double Temperature { get; set; }
+        public DateTime LogTime { get; set; }  
     }
 }

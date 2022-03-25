@@ -27,7 +27,14 @@ namespace API.Controllers
         [HttpGet]
         public List<SensorData> Get()
         {
+            try
+            {
             return DBContext.GetData();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
             //dataList.Add(new SensorData { Humidity = 28.10, Temperature = 25.45 });
            // string data = JsonSerializer.Serialize(dataList);
           //  return data;
@@ -47,7 +54,8 @@ namespace API.Controllers
         {
             try
             {
-                DBContext.PostData(value);
+                SensorData sensorData = new SensorData() { Humidity=23.25, Temperature=25.45};
+                DBContext.PostData(sensorData);
             }
             catch (Exception)
             {
