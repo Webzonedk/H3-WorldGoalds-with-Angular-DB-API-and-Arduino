@@ -16,10 +16,12 @@
 DHT dht(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
 
 // Variables
-float hum;  // Stores humidity value
-float temp; // Stores temperature value
+float hum;                // Stores humidity value
+float temp;               // Stores temperature value
+int messuringTimer = 500; // Time between messurement
 
-// All three numbers needs to be the same or the code will break
+// How many messurements shall be made before calculating the sending dataList
+//  All three numbers needs to be the same or the code will break
 int spreadSize = 10;
 float hums[10];
 float temps[10];
@@ -61,34 +63,33 @@ void setup()
 
 void loop()
 {
+  // Reading and calculating the numbers
   readTempAndHum();
+
+  // filling in the data to send
   String path = "/api/sensor/post";
   Serial.println("making POST request");
   String contentType = "application/json";
 
-  String postData = "{\"humidity\":" + String(hum, 2) + ",\"temperature\":" + String(temp, 2) +"}";
-  //String postData1 = "humidity=" + String(hum, 2) + "&temperature=" + String(temp, 2);
+  String postData = "{\"humidity\":" + String(hum, 2) + ",\"temperature\":" + String(temp, 2) + "}";
 
-  Serial.print("postData: = "); // DEBUG
-  Serial.println(postData);     // DEBUG
-
+  // Sending the data to API
   client.post(path, contentType, postData);
 
   // read the status code and body of the response
   int statusCode = client.responseStatusCode();
   String response = client.responseBody();
-
+  // Print staus code and response
   Serial.print("Status code: ");
   Serial.println(statusCode);
   Serial.print("Response: ");
   Serial.println(response);
-
-  Serial.println("Wait a sec");
-  delay(1000);
 }
 
+// Function to do the messurements, calculating avarage an
 void readTempAndHum()
 {
+  // Filling in data from sensor to the arrays to be used for calculating the avarage
   for (int i = 0; i < spreadSize; i++)
   {
     hum = dht.readHumidity();
@@ -100,8 +101,14 @@ void readTempAndHum()
     Serial.println(" Celsius");
     hums[i] = hum;
     temps[i] = temp;
-    delay(500); // Delay 1 sec.
+    delay(messuringTimer);
   }
+  calculateAvarage();
+}
+
+// Function to calculate avarage for each messurement
+void calculateAvarage()
+{
   float humsCount = 0;
   float tempsCount = 0;
   for (int i = 0; i < spreadSize; i++)
