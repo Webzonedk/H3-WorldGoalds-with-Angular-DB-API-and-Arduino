@@ -89,7 +89,7 @@ void loop()
 // Function to do the messurements, calculating avarage an
 void readTempAndHum()
 {
-  // Filling in data from sensor to the arrays to be used for calculating the avarage
+  // Filling in data from sensor to the arrays to be used for calculating the avarage 
   for (int i = 0; i < spreadSize; i++)
   {
     hum = dht.readHumidity();

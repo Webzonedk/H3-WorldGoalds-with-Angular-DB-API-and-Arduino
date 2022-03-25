@@ -2,7 +2,7 @@ CREATE TABLE tempData (
 	id SERIAL NOT NULL UNIQUE PRIMARY KEY,
 	humidity FLOAT,
 	temperature FLOAT,
-	logTime TIMESTAMP DEFAULT LOCALTIMESTAMP
+	logTime TIMESTAMP
 );
 
 
@@ -25,13 +25,13 @@ CREATE OR REPLACE PROCEDURE insertdata(
 
 
 
-CREATE OR REPLACE PROCEDURE getdata()
-	
-	LANGUAGE plpgsql
-	AS $$
+CREATE OR REPLACE FUNCTION getdata()
+	RETURNS SETOF tempdata AS $$	
 	BEGIN
+		RETURN QUERY SELECT * FROM tempdata;
+	END
+	$$
+	LANGUAGE plpgsql;
 	
-	SELECT * FROM tempData;
-		
-	COMMIT;
-	END;$$
+	SELECT * FROM getdata();
+	

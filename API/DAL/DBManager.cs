@@ -1,4 +1,6 @@
 ﻿using Npgsql;
+using System.Diagnostics;
+using System.Data;
 
 namespace API.DAL
 {
@@ -17,16 +19,16 @@ namespace API.DAL
         internal List<SensorData> GetData()
         {
 
+                List<SensorData> data = new List<SensorData>();
             try
             {
                 NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+                NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM tempData", connection);
+                //NpgsqlCommand cmd = new NpgsqlCommand("SELECT getdata()", connection);
+                cmd.CommandType = CommandType.Text;
                 connection.Open();
-                NpgsqlCommand cmd = new NpgsqlCommand("CALL getdata()", connection);
-                cmd.CommandType = System.Data.CommandType.Text;
-                cmd.ExecuteNonQuery();
 
                 NpgsqlDataReader reader = cmd.ExecuteReader();
-                List<SensorData> data = new List<SensorData>();
 
                 while (reader.Read())
                 {
@@ -34,46 +36,46 @@ namespace API.DAL
                     {
                         Humidity = (double)reader["humidity"],
                         Temperature = (double)reader["temperature"],
-                        LogTime = (DateTime)reader["logTime"]
+                        LogTime = (DateTime)reader["logtime"]
                     };
 
                     data.Add(sensorData);
                 }
                 connection.Close();
-                return data;
 
             }
-            catch (Exception e)
+            catch (Exception error)
             {
-                Console.WriteLine(e.Message);
+                Debug.WriteLine(error.Message);
                 throw;
             }
+                return data;
         }
+
+
 
         internal void PostData(SensorData value)
         {
             try
             {
                 NpgsqlConnection connection = new NpgsqlConnection(connectionString);
-                connection.Open();
-                NpgsqlCommand cmd = new NpgsqlCommand("CALL @insertdata(@humidity, @temperature)", connection);
-                cmd.CommandType = System.Data.CommandType.Text;
+                NpgsqlCommand cmd = new NpgsqlCommand("CALL insertdata(@humidity,@temperature,@logtime)", connection);
+                cmd.CommandType = CommandType.Text;
                 cmd.Parameters.Add("@humidity", NpgsqlTypes.NpgsqlDbType.Double).Value = value.Humidity;
                 cmd.Parameters.Add("@temperature", NpgsqlTypes.NpgsqlDbType.Double).Value = value.Temperature;
+                cmd.Parameters.Add("@logtime", NpgsqlTypes.NpgsqlDbType.Timestamp).Value = value.LogTime;
+                
+                connection.Open();
                 cmd.ExecuteNonQuery();
-
                 connection.Close();
 
             }
-            catch (Exception e)
+            catch (Exception error)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(error.Message);
                 throw;
             }
         }
-
-
-        //DataCollection.Add(value);
     }
 }
 

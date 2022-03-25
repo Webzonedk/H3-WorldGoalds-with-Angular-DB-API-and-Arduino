@@ -13,10 +13,10 @@ namespace API.Controllers
     {
         private readonly IConfiguration configuration;
         private DBManager DBContext;
-        public SensorController(IConfiguration config)
+        public SensorController(IConfiguration _config)
         {
+            configuration = _config;
             DBContext = new DBManager(configuration);
-            configuration = config;
         }
 
         //List<SensorData> dataList = new List<SensorData>();
@@ -29,15 +29,14 @@ namespace API.Controllers
         {
             try
             {
-            return DBContext.GetData();
+                List<SensorData> tempList = DBContext.GetData();
+                return tempList;
             }
-            catch (Exception)
+            catch (Exception error)
             {
+                Debug.WriteLine(error.Message);
                 throw;
             }
-            //dataList.Add(new SensorData { Humidity = 28.10, Temperature = 25.45 });
-           // string data = JsonSerializer.Serialize(dataList);
-          //  return data;
         }
 
         //// GET api/<sensorController>/5
@@ -50,16 +49,23 @@ namespace API.Controllers
         // POST api/<sensorController>
         [Route("post")]
         [HttpPost]
-        public void Post([FromBody] SensorData value)
+        public void Post(SensorData value)
         {
             try
             {
-                SensorData sensorData = new SensorData() { Humidity=23.25, Temperature=25.45};
+                SensorData sensorData = new SensorData()
+                {
+                    Humidity = value.Humidity,
+                    Temperature = value.Temperature,
+                    LogTime = DateTime.Now
+                };
+               //SensorData sensorData = new SensorData() { Humidity = 23.25, Temperature = 25.45, LogTime = DateTime.Now };
                 DBContext.PostData(sensorData);
             }
-            catch (Exception)
+            catch (Exception error)
             {
-
+                Debug.WriteLine(error.Message);
+                throw;
             }
         }
 
