@@ -1,4 +1,7 @@
 
+//The MKR1000 board is very unstable, and do stop working after a while. It can be hours
+// or sometimes days. But it do fail often. There for it is not suitable for production environment.
+
 
 // Simple POST client for ArduinoHttpClient library
 // Connects to server once every five seconds, sends a POST request
