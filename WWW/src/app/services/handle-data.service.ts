@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { SensorData } from '../interfaces/sensorData';
+import { SensorData } from './../interfaces/sensorData';
 import { CrudService } from './crud.service';
 
 @Injectable({
@@ -15,13 +15,16 @@ export class HandleDataService {
 
   loadSensorData() {
     let count;
-
+    console.debug('loadSensorData')
     this.crudService.getSensorData().subscribe((sensorData: SensorData[]) => {
       next:
+      console.debug('data', sensorData)
       count = sensorData;
-
+      console.debug('count', count)
       complete:
+      console.debug('complete')
       this.sensorData$.next(count);
+
     });
   }
 }

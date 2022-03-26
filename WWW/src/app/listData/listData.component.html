@@ -1,3 +1,10 @@
-<p>
-  listData works!
-</p>
+<h2>
+    Crunching the data!
+</h2>
+<button class="btn btn-primary" type="submit" (click)="loadSensorData()">Load data</button>
+
+<div class="row m-2 p-1">
+    <div class="col-xl-12" *ngFor="let result of sensorDataArray; index as i">
+        <span>Humidity: {{ result.humidity }}, Temperature: {{ result.temperature}}, TimeStamp {{ result.logTime |  date:'dd MMM, y, HH:mm:ss' }}; </span>
+    </div>
+</div>
