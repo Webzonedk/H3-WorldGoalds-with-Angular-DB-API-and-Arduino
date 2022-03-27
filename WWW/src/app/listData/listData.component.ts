@@ -36,9 +36,7 @@ export class ListDataComponent implements OnInit {
   }
 
   updateData() {
-    // var table = $("#sensorDataList").DataTable();
-    // table.destroy();
     this.loadSensorData();
-}
+  }
 
 }
