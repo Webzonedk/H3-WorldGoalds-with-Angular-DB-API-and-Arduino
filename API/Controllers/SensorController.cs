@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using System.Diagnostics;
 using API.DAL;
+using Microsoft.AspNetCore.SignalR;
+using API.DataHubConfig;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace API.Controllers
@@ -12,11 +14,13 @@ namespace API.Controllers
     public class SensorController : ControllerBase
     {
         private readonly IConfiguration configuration;
-        private DBManager DBContext;
-        public SensorController(IConfiguration _config)
+        private DBManager _dBContext;
+        private IHubContext<SensorDataHub> _hub;
+        public SensorController(IConfiguration config, IHubContext<SensorDataHub> hub)
         {
-            configuration = _config;
-            DBContext = new DBManager(configuration);
+            configuration = config;
+            _dBContext = new DBManager(configuration);
+            _hub = hub;
         }
 
         //List<SensorData> dataList = new List<SensorData>();
@@ -29,12 +33,11 @@ namespace API.Controllers
         {
             try
             {
-                List<SensorData> tempList = DBContext.GetData();
+                List<SensorData> tempList = _dBContext.GetData();
                 return tempList;
             }
-            catch (Exception error)
+            catch (Exception)
             {
-                Debug.WriteLine(error.Message);
                 throw;
             }
         }
@@ -49,7 +52,8 @@ namespace API.Controllers
         // POST api/<sensorController>
         [Route("post")]
         [HttpPost]
-        public void Post(SensorData value)
+       //public void Post(SensorData value)
+        public async Task<ActionResult> Post(SensorData value)
         {
             try
             {
@@ -60,12 +64,13 @@ namespace API.Controllers
                     LogTime = DateTime.Now
                 };
                //SensorData sensorData = new SensorData() { Humidity = 23.25, Temperature = 25.45, LogTime = DateTime.Now };
-                DBContext.PostData(sensorData);
+                _dBContext.PostData(sensorData);
+                await _hub.Clients.All.SendAsync("transferData", new List<SensorData>());
+                return Ok();
             }
-            catch (Exception error)
+            catch (Exception)
             {
-                Debug.WriteLine(error.Message);
-                throw;
+                return StatusCode(500, "The transfer to DB failed");
             }
         }
 

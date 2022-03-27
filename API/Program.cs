@@ -1,21 +1,35 @@
+using API.DataHubConfig;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
+var _corsPolicy = "CorsPolicy";
+//Adding Cors
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
+    options.AddPolicy(name: _corsPolicy,
         builder =>
         {
-            builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-            //Only for use in angular
-           // builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+            builder
+            //.AllowAnyOrigin()
+            .WithOrigins(
+            "http://192.168.2.0:4200",
+            "http://localhost:4200",
+            "http://localhost:80",
+            "http://192.168.2.24:4200",
+            "http://192.168.2.24:80")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+
+
         });
 });
 
 
 
+//Adding signalR
+builder.Services.AddSignalR();
 
 // Add services to the container.
 
@@ -33,11 +47,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(MyAllowSpecificOrigins);
+//Needed for signalR
+app.UseRouting();
+app.UseCors(_corsPolicy);
 
 //app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+
+//Adding andpont to be used by SignalR
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<SensorDataHub>("/sensorData");
+});
 
 app.MapControllers();
 

@@ -1,3 +1,4 @@
+import { CrudService } from '../services/crud.service';
 import { HandleDataService } from '../services/handle-data.service';
 import { Component, OnInit } from '@angular/core';
 import { SensorData } from './../interfaces/sensorData';
@@ -12,7 +13,7 @@ export class ListDataComponent implements OnInit {
 
   sensorDataArray: SensorData[] = [];
 
-  constructor(private handleDataService: HandleDataService) {
+  constructor(private handleDataService: HandleDataService, private crudService: CrudService) {
 
     this.handleDataService.sensorData$.subscribe((sensorDataFromApi: SensorData[]) => {
       next:
@@ -24,10 +25,20 @@ export class ListDataComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadSensorData();
+    this.crudService.startConnection();
+    this.crudService.addDataListener();
+    this.crudService.onDataUpdate(this.updateData.bind(this));
+
   }
 
   loadSensorData() {
     this.handleDataService.loadSensorData();
   }
+
+  updateData() {
+    // var table = $("#sensorDataList").DataTable();
+    // table.destroy();
+    this.loadSensorData();
+}
 
 }
