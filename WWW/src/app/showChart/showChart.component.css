@@ -1,5 +1,18 @@
+h2 {
+    color: rgba( 250, 235, 215, 1);
+}
+
+p {
+    color: #fff;
+}
+
 .flex {
     display: flex;
+}
+
+.flex-header {
+    display: flex;
+    justify-content: center;
 }
 
 .flex-item {

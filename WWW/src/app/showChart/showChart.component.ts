@@ -35,14 +35,6 @@ export class ShowChartComponent implements OnInit {
           this.humidityData[index] =this.sensorDataArray[index].humidity;
           this.logTimeData[index] =this.sensorDataArray[index].logTime;
         }
-        // console.log('sensorDataArray_1');
-        // console.log(this.sensorDataArray);
-        // console.log('tempData_1');
-        // console.log(this.tempData);
-        // console.log('humidityData_1');
-        // console.log(this.humidityData);
-        // console.log('logTime_1');
-        // console.log(this.logTimeData);
         this.chart?.update();
       }
     });
@@ -56,93 +48,65 @@ export class ShowChartComponent implements OnInit {
         data: this.tempData,
         label: 'Temperature',
         yAxisID: 'y-axis-0',
-        backgroundColor: 'rgba(148,159,177,0.2)',
-        borderColor: 'rgba(148,159,177,1)',
-        pointBackgroundColor: 'rgba(148,159,177,1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(148,159,177,0.8)',
+        backgroundColor: 'rgba(225,6,0,0.1)',
+        borderColor: 'rgba(225,6,0,1)',
+        pointBackgroundColor: 'rgba(225,6,0,1)',
+        pointBorderColor: 'rgba(225,0,152,0.8)',
+        pointHoverBackgroundColor: 'rgba(225,6,0,0.1)',
+        pointHoverBorderColor: 'rgba(225,0,152,0.8)',
         fill: 'origin',
       },
       {
         data: this.humidityData,
         label: 'Humidity',
-        yAxisID: 'y-axis-1',
-        backgroundColor: 'rgba(77,83,96,0.2)',
-        borderColor: 'rgba(77,83,96,1)',
-        pointBackgroundColor: 'rgba(77,83,96,1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(77,83,96,1)',
+        yAxisID: 'y-axis-0',
+        backgroundColor: 'rgba(8,39,245,0.1)',
+        borderColor: 'rgba(8,39,245,1)',
+        pointBackgroundColor: 'rgba(8,39,245,1)',
+        pointBorderColor: 'rgba(0,174,239,0.5)',
+        pointHoverBackgroundColor: 'rgba(8,39,245,0.1)',
+        pointHoverBorderColor: 'rgba(0,174,239,1)',
         fill: 'origin',
       }
-      // ,
-      // {
-      //   data: [180, 480, 770, 90, 1000, 270, 400],
-      //   label: 'Series C',
-      //   yAxisID: 'y-axis-1',
-      //   backgroundColor: 'rgba(255,0,0,0.3)',
-      //   borderColor: 'red',
-      //   pointBackgroundColor: 'rgba(148,159,177,1)',
-      //   pointBorderColor: '#fff',
-      //   pointHoverBackgroundColor: '#fff',
-      //   pointHoverBorderColor: 'rgba(148,159,177,0.8)',
-      //   fill: 'origin',
-      // }
     ],
     labels: this.logTimeData
   };
 
   public lineChartOptions: ChartConfiguration['options'] = {
     elements: {
+
       line: {
         tension: 0.5
       }
+
+
     },
     scales: {
-      // We use this empty structure as a placeholder for dynamic theming.
+      // Left Y-axis values.
       x: {},
       'y-axis-0':
       {
         position: 'left',
       },
-      'y-axis-1': {
-        position: 'right',
-        grid: {
-          color: 'rgba(255,0,0,0.3)',
-        },
-        ticks: {
-          color: 'red'
-        }
-      }
+
+      // Right Y-axis values
+      // 'y-axis-1': {
+      //   position: 'right',
+      //   grid: {
+      //     color: 'rgba(255,0,0,0.3)',
+      //   },
+      //   ticks: {
+      //     color: 'red'
+      //   }
+      // }
     },
 
 
 
     plugins: {
-      legend: { display: true }
 
-
-      //   annotation: {
-      //     annotations: [
-      //       {
-      //         type: 'line',
-      //         scaleID: 'x',
-      //         value: 'March',
-      //         borderColor: 'orange',
-      //         borderWidth: 2,
-      //         label: {
-      //           position: 'center',
-      //           enabled: true,
-      //           color: 'orange',
-      //           content: 'LineAnno',
-      //           font: {
-      //             weight: 'bold'
-      //           }
-      //         }
-      //       },
-      //     ],
-      //   }
+      legend: { display: true,
+      },
     },
   };
 
@@ -209,8 +173,9 @@ export class ShowChartComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log('ngOnInit loaded');
+    //Adding the first data when the app starts
     this.loadSensorData();
+    //Starting the listener to update automatic  everytime new data is added to DB
     this.crudService.startConnection();
     this.crudService.addDataListener();
     this.crudService.onDataUpdate(this.updateData.bind(this));

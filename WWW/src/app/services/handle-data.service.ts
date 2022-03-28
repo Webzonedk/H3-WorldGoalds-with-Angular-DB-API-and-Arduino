@@ -14,17 +14,14 @@ export class HandleDataService {
   constructor(private crudService: CrudService) { }
 
   loadSensorData() {
-    let count;
     console.debug('loadSensorData')
     this.crudService.getSensorData().subscribe((sensorData: SensorData[]) => {
       next:
-      // console.debug('data', sensorData)
-      // count = sensorData;
-      // console.debug('count', count)
+
+
       complete:
-      console.debug('complete')
+      //console.debug('complete')
       this.sensorData$.next(sensorData);
-      // console.debug(sensorData)
 
     });
 
