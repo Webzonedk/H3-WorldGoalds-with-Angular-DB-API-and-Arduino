@@ -51,9 +51,9 @@ export class ShowChartComponent implements OnInit {
         backgroundColor: 'rgba(225,6,0,0.1)',
         borderColor: 'rgba(225,6,0,1)',
         pointBackgroundColor: 'rgba(225,6,0,1)',
-        pointBorderColor: 'rgba(225,0,152,0.8)',
+        pointBorderColor: 'rgba(250, 235, 215,0.4)',
         pointHoverBackgroundColor: 'rgba(225,6,0,0.1)',
-        pointHoverBorderColor: 'rgba(225,0,152,0.8)',
+        pointHoverBorderColor: 'rgba(250, 235, 215,1)',
         fill: 'origin',
       },
       {
