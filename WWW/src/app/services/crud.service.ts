@@ -16,19 +16,19 @@ export class CrudService {
   constructor(private http: HttpClient) { }
 
   //-------------------------------------
-  //SignalR datahub start. Friendly borrowed from C-charpCorner
+  //SignalR datahub start.
   //-------------------------------------
-  // readonly baseURL = 'http://192.168.2.24:8001/api/sensor/sensorData';
   hubConnection!: signalR.HubConnection;
 
   updateData!: () => void;
   onDataUpdate(fn: () => void) {
     this.updateData = fn;
   }
+
   startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('http://192.168.2.24:8001/sensorData')
-      // .withUrl('http://192.168.2.24:8001/api/sensor/sensorData')
+      //.withUrl('http://192.168.2.24:8001/sensorData') //Home
+      .withUrl('http://192.168.2.106:8001/sensorData') //School
       .build();
 
     this.hubConnection
@@ -45,7 +45,7 @@ export class CrudService {
   //-------------------------------------
 
 
-  //Service to rethrieve data ferom the API in json format
+  //Service to retrieve data from the API in json format
   getSensorData(): Observable<SensorData[]> {
     var result = this.http.get<SensorData[]>(this.ApiURL + `/api/sensor/get`);
     return result;
