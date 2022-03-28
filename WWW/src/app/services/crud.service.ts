@@ -11,7 +11,8 @@ import * as signalR from "@microsoft/signalr"
 
 export class CrudService {
   //The url for the API
-  ApiURL: string = "http://192.168.2.24:8001"
+ // ApiURL: string = "http://192.168.2.24:8001" //Home
+  ApiURL: string = "http://192.168.2.105:8001" //School
 
   constructor(private http: HttpClient) { }
 
@@ -28,7 +29,7 @@ export class CrudService {
   startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
       //.withUrl('http://192.168.2.24:8001/sensorData') //Home
-      .withUrl('http://192.168.2.106:8001/sensorData') //School
+      .withUrl('http://192.168.2.105:8001/sensorData') //School
       .build();
 
     this.hubConnection

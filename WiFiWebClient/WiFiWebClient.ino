@@ -34,7 +34,8 @@ float temps[10];
 char ssid[] = SECRET_SSID;
 char pass[] = SECRET_PASS;
 
-char serverAddress[] = "192.168.2.24"; // server address for the API
+//char serverAddress[] = "192.168.2.24"; // server address for the API at home
+char serverAddress[] = "192.168.2.105"; // server address for the API at school
 int port = 8001;                       // Port number for the API
 
 WiFiClient wifi;

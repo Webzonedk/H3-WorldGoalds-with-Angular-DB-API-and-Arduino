@@ -18,13 +18,16 @@ export class HandleDataService {
     console.debug('loadSensorData')
     this.crudService.getSensorData().subscribe((sensorData: SensorData[]) => {
       next:
-      console.debug('data', sensorData)
-      count = sensorData;
-      console.debug('count', count)
+      // console.debug('data', sensorData)
+      // count = sensorData;
+      // console.debug('count', count)
       complete:
       console.debug('complete')
-      this.sensorData$.next(count);
+      this.sensorData$.next(sensorData);
+      // console.debug(sensorData)
 
     });
+
+
   }
 }

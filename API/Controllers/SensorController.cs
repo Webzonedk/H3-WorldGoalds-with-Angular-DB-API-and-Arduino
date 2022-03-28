@@ -63,7 +63,7 @@ namespace API.Controllers
                     Temperature = value.Temperature,
                     LogTime = DateTime.Now
                 };
-               //SensorData sensorData = new SensorData() { Humidity = 23.25, Temperature = 25.45, LogTime = DateTime.Now };
+
                 _dBContext.PostData(sensorData);
                 await _hub.Clients.All.SendAsync("transferData", new List<SensorData>());
                 return Ok();
