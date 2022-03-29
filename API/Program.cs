@@ -2,7 +2,10 @@ using API.DataHubConfig;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+/// <summary>
+/// Adding Cors, to be able to share data over multiple IP's and instances
+/// Cors is added as a nugget
+/// </summary>
 var _corsPolicy = "CorsPolicy";
 //Adding Cors
 builder.Services.AddCors(options =>
@@ -11,7 +14,6 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder
-            //.AllowAnyOrigin()
             .WithOrigins(
             "http://192.168.2.0:4200",
             "http://192.168.2.102:4200",
@@ -31,8 +33,9 @@ builder.Services.AddCors(options =>
 });
 
 
-
-//Adding signalR
+/// <summary>
+/// Adding signalR to be able to send live data to the website
+/// </summary>
 builder.Services.AddSignalR();
 
 // Add services to the container.
@@ -51,8 +54,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//Needed for signalR
+/// <summary>
+/// Needed for signalR to be able to send handshakes
+/// </summary>
 app.UseRouting();
+
+/// <summary>
+/// Applying the Cors
+/// </summary>
 app.UseCors(_corsPolicy);
 
 //app.UseHttpsRedirection();
@@ -60,7 +69,10 @@ app.UseCors(_corsPolicy);
 app.UseAuthorization();
 
 
-//Adding andpont to be used by SignalR
+
+/// <summary>
+/// Adding andpont to be used by SignalR
+/// </summary>
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<SensorDataHub>("/sensorData");

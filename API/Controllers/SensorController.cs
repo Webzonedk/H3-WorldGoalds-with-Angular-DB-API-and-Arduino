@@ -5,7 +5,7 @@ using System.Diagnostics;
 using API.DAL;
 using Microsoft.AspNetCore.SignalR;
 using API.DataHubConfig;
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace API.Controllers
 {
@@ -23,10 +23,12 @@ namespace API.Controllers
             _hub = hub;
         }
 
-        //List<SensorData> dataList = new List<SensorData>();
 
 
-        // GET: api/<sensorController>
+        /// <summary>
+        /// Method to get data from DB
+        /// </summary>
+        /// <returns></returns>
         [Route("get")]
         [HttpGet]
         public List<SensorData> Get()
@@ -42,17 +44,16 @@ namespace API.Controllers
             }
         }
 
-        //// GET api/<sensorController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
 
-        // POST api/<sensorController>
+
+        /// <summary>
+        /// Posting data to DB
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        ///
         [Route("post")]
         [HttpPost]
-       //public void Post(SensorData value)
         public async Task<ActionResult> Post(SensorData value)
         {
             try
@@ -65,6 +66,7 @@ namespace API.Controllers
                 };
 
                 _dBContext.PostData(sensorData);
+                //Sending dataupdate to Frontend, using signalR
                 await _hub.Clients.All.SendAsync("transferData", new List<SensorData>());
                 return Ok();
             }
@@ -74,12 +76,25 @@ namespace API.Controllers
             }
         }
 
+
+        //Not implemented, but saved for future reference
+        //// GET api/<sensorController>/5
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
+
+
+        //Not implemented, but saved for future reference
         //// PUT api/<sensorController>/5
         //[HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)
         //{
         //}
 
+
+        //Not implemented, but saved for future reference
         //// DELETE api/<sensorController>/5
         //[HttpDelete("{id}")]
         //public void Delete(int id)
