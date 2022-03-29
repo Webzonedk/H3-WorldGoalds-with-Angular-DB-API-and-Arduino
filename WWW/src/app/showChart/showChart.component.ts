@@ -26,9 +26,11 @@ export class ShowChartComponent implements OnInit {
 
 
   constructor(private handleDataService: HandleDataService, private crudService: CrudService) {
-    console.log('Constructor loaded');
+    //console.log('Constructor loaded');  //DEBUG
+    //Subscribing to the observable
     this.handleDataService.sensorData$.subscribe((sensorDataFromApi: SensorData[]) => {
       next:
+      //Filling in the data to the arrays
       if (this.sensorDataArray.length !== sensorDataFromApi.length) {
         this.sensorDataArray = sensorDataFromApi;
 
@@ -38,13 +40,14 @@ export class ShowChartComponent implements OnInit {
           let tempLog = new Date(this.sensorDataArray[index].logTime);
           this.logTimeData[index] =  tempLog.toLocaleString('da-DK');
         }
+        //Pushing the data to the chart Whenever there is new data available
         this.chart?.update();
       }
     });
 
   }
 
-
+//Configuration of the chart layout, and colors
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [
       {
@@ -54,7 +57,7 @@ export class ShowChartComponent implements OnInit {
         backgroundColor: 'rgba(225,6,0,0.1)',
         borderColor: 'rgba(225,6,0,1)',
         pointBackgroundColor: 'rgba(225,6,0,0.0)',
-        pointBorderColor: 'rgba(250, 235, 215,0.0)',
+        pointBorderColor: 'rgba(250, 235, 215,0.5)',
         pointHoverBackgroundColor: 'rgba(225,6,0,0.1)',
         pointHoverBorderColor: 'rgba(250, 235, 215,1)',
         fill: 'origin',
@@ -66,7 +69,7 @@ export class ShowChartComponent implements OnInit {
         backgroundColor: 'rgba(8,39,245,0.1)',
         borderColor: 'rgba(8,39,245,1)',
         pointBackgroundColor: 'rgba(8,39,245,0.0)',
-        pointBorderColor: 'rgba(0,174,239,0.0)',
+        pointBorderColor: 'rgba(0,174,239,0.5)',
         pointHoverBackgroundColor: 'rgba(8,39,245,0.1)',
         pointHoverBorderColor: 'rgba(0,174,239,1)',
         fill: 'origin',
@@ -91,7 +94,9 @@ export class ShowChartComponent implements OnInit {
       {
         position: 'left',
       },
-
+      //-------------------------------------------------------------------------
+      // Y-axis settings, not implemented, but kept for remembering the syntax
+      //-------------------------------------------------------------------------
       // Right Y-axis values
       // 'y-axis-1': {
       //   position: 'right',
@@ -118,6 +123,41 @@ export class ShowChartComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
+
+    // events
+    public chartClicked({ event, active }: { event?: ChartEvent, active?: {}[] }): void {
+      console.log(event, active);
+    }
+
+    public chartHovered({ event, active }: { event?: ChartEvent, active?: {}[] }): void {
+      console.log(event, active);
+    }
+
+
+
+      ngOnInit(): void {
+        //Adding the first data when the app starts
+        this.loadSensorData();
+        //Starting the listener to update automatic  everytime new data is added to DB
+        this.crudService.startConnection();
+        this.crudService.addDataListener();
+        this.crudService.onDataUpdate(this.updateData.bind(this));
+      }
+
+    // Function to retrieve new data
+      loadSensorData() {
+        this.handleDataService.loadSensorData();
+      }
+
+    //The update function to be used in the listener
+      updateData() {
+        this.loadSensorData();
+      }
+
+
+    //-----------------------------------------------------------------------------------------
+    //Additional functions to be used with the chart. They are not implemented, but is kept for references
+    //-----------------------------------------------------------------------------------------
   // private static generateNumber(i: number): number {
   //   return Math.floor((Math.random() * (i < 2 ? 100 : 1000)) + 1);
   // }
@@ -131,14 +171,7 @@ export class ShowChartComponent implements OnInit {
   //   this.chart?.update();
   // }
 
-  // events
-  public chartClicked({ event, active }: { event?: ChartEvent, active?: {}[] }): void {
-    console.log(event, active);
-  }
 
-  public chartHovered({ event, active }: { event?: ChartEvent, active?: {}[] }): void {
-    console.log(event, active);
-  }
 
   // public hideOne(): void {
   //   const isHidden = this.chart?.isDatasetHidden(1);
@@ -174,24 +207,6 @@ export class ShowChartComponent implements OnInit {
 
 
 
-
-
-  ngOnInit(): void {
-    //Adding the first data when the app starts
-    this.loadSensorData();
-    //Starting the listener to update automatic  everytime new data is added to DB
-    this.crudService.startConnection();
-    this.crudService.addDataListener();
-    this.crudService.onDataUpdate(this.updateData.bind(this));
-  }
-
-  loadSensorData() {
-    this.handleDataService.loadSensorData();
-  }
-
-  updateData() {
-    this.loadSensorData();
-  }
 
 
 
